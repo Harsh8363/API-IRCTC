@@ -37,6 +37,16 @@ Train.findBySourceAndDestination = async (source, destination) => {
     throw err;
   }
 };
+Train.findByNameAndSourceAndDestination = async (name,source, destination) => {
+  const query = "SELECT * FROM trains WHERE name = ? AND source = ? AND destination = ?";
+
+  try {
+    const [rows] = await db.query(query, [name, source, destination]);
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+};
 
 Train.updateAvailableSeats = async (trainId, newAvailableSeats) => {
   const query = "UPDATE trains SET available_seats = ? WHERE id = ?";
@@ -54,6 +64,16 @@ Train.findById = async (trainId) => {
 
   try {
     const [rows] = await db.query(query, [trainId]);
+    return rows[0];
+  } catch (err) {
+    throw err;
+  }
+};
+Train.findByTrainName = async (name) => {
+  const query = "SELECT * FROM trains WHERE name= ?";
+
+  try {
+    const [rows] = await db.query(query, [name]);
     return rows[0];
   } catch (err) {
     throw err;

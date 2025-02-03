@@ -3,15 +3,18 @@ const Train = require("../models/train");
 exports.createTrain = async (req, res, next) => {
   try {
     const { name, source, destination, totalSeats } = req.body;
-    const { adminKey } = req.headers;
+    const { role } = req.user;
+
+    //console.log(totalSeats);
 
     // Validate admin key
-    if (adminKey !== process.env.ADMIN_KEY) {
+    if (role !== "admin") {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     // Check if train already exists
-    const existingTrains = await Train.findBySourceAndDestination(
+    const existingTrains = await Train.findByNameAndSourceAndDestination(
+      name,
       source,
       destination
     );

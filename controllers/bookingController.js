@@ -17,27 +17,30 @@ exports.bookSeat = async (req, res, next) => {
     const { trainId, seatCount } = req.body;
     const userId = req.user.userId;
 
-    // Check if train exists
-    const [train] = await connection.query(
+    // Check if train exists and lock it for update
+    const [trainRows] = await connection.query(
       "SELECT * FROM trains WHERE id = ? FOR UPDATE",
       [trainId]
     );
-    if (!train[0]) {
+    const train = trainRows[0];
+
+    if (!train) {
+      await connection.rollback();
       return res.status(404).json({ error: "Train not found" });
     }
 
-    // Check if enough seats are available
-    if (train[0].available_seats < seatCount) {
+    // Check seat availability
+    if (train.available_seats < seatCount) {
       await connection.rollback();
       return res.status(400).json({ error: "Not enough seats available" });
     }
 
-    // Create a new booking
+    // Create the booking using the same connection
     const newBooking = new Booking({ trainId, userId, seatCount });
     const bookingId = await Booking.create(newBooking, connection);
 
-    // Update available seats for the train
-    const newAvailableSeats = train[0].available_seats - seatCount;
+    // Update available seats
+    const newAvailableSeats = train.available_seats - seatCount;
     await connection.query(
       "UPDATE trains SET available_seats = ? WHERE id = ?",
       [newAvailableSeats, trainId]
@@ -52,6 +55,8 @@ exports.bookSeat = async (req, res, next) => {
     connection.release();
   }
 };
+
+
 
 exports.getBookingDetails = async (req, res, next) => {
   try {

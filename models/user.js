@@ -1,6 +1,7 @@
 const db = require("../config/database");
 
 const User = function (user) {
+  this.id=user.userID;
   this.name = user.name;
   this.email = user.email;
   this.password = user.password;
@@ -30,5 +31,17 @@ User.findByEmail = async (email) => {
     throw err;
   }
 };
+User.findById= async (id) => {
+  const query = "SELECT * FROM users WHERE id = ?";
+
+  try {
+    const [rows] = await db.query(query, [id]);
+    return rows[0];
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 module.exports = User;
+

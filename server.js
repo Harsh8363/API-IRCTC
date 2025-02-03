@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/trains", trainRoutes);
@@ -18,7 +18,7 @@ app.use("/users", userRoutes);
 
 app.use(errorMiddleware.errorHandler);
 
-const PORT = process.env.PORT || 8000;
+const PORT =  8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

@@ -15,7 +15,7 @@ exports.register = async (req, res, next) => {
 
     // Encrypt password
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    // console.log('Hashed Password:', hashedPassword);
     // Create and save user
     const newUser = new User({ name, email, password: hashedPassword, role });
     const userId = await User.create(newUser);
@@ -29,6 +29,7 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
 
     // Validate user existence
     const user = await User.findByEmail(email);
@@ -45,7 +46,7 @@ exports.login = async (req, res, next) => {
     // Create authentication token
     const authToken = jwt.sign(
       { userId: user.id, role: user.role },
-      process.env.JWT_SECRET,
+      "harshit",
       { expiresIn: "1h" }
     );
 
