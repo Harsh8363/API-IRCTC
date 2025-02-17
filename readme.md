@@ -1,4 +1,4 @@
-# SDE API Round - IRCTC
+# IRCTC Ticket Booking System
 
 This is a railway management system built with Node.js, Express.js, and MySQL. It provides APIs for users to check train availability, book seats, and manage bookings. It also includes an admin interface for creating and managing trains.
 
